@@ -1,0 +1,27 @@
+{
+  "name": "@rui/cheshire",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./mod.ts",
+    "./executor": "./executor.ts",
+    "./step": "./step.ts",
+    "./steps": "./steps.ts",
+    "./types": "./types.ts",
+    "./platform": "./platform.ts",
+    "./parameters": "./parameters.ts",
+    "./colours": "./colours.ts",
+    "./spinner": "./spinner.ts"
+  },
+  "tasks": {
+    "fmt": "deno fmt --check",
+    "lint": "deno lint",
+    "test": "deno test -A"
+  },
+  "imports": {
+    "@cliffy/ansi/colors": "jsr:@cliffy/ansi@^1.0.0/colors"
+  },
+  "lint": { "rules": { "tags": ["recommended"] } },
+  "fmt": { "useTabs": false, "lineWidth": 100 }
+}
+
+

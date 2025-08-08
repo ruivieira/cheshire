@@ -1,0 +1,28 @@
+name: release-jsr
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+permissions: read-all
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v1.x
+      - name: Set package version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          jq ".version = \"${VERSION}\"" deno.json > deno.tmp && mv deno.tmp deno.json
+      - run: deno fmt --check
+      - run: deno lint
+      - run: deno test -A
+      - name: Publish to JSR
+        env:
+          JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
+        run: deno publish --allow-dirty
+
+
+
