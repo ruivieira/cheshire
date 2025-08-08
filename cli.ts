@@ -104,8 +104,10 @@ export async function runPipelineDirectly(
         }
       });
     }
+
+    Deno.exit(result.success ? 0 : 1);
   } catch (error) {
     console.error('❌ Failed to run pipeline:', error);
-    throw error;
+    Deno.exit(1);
   }
 }
