@@ -10,7 +10,8 @@
     "./platform": "./platform.ts",
     "./parameters": "./parameters.ts",
     "./colours": "./colours.ts",
-    "./spinner": "./spinner.ts"
+    "./spinner": "./spinner.ts",
+    "./cli": "./cli.ts"
   },
   "tasks": {
     "fmt": "deno fmt --check",
@@ -21,5 +22,19 @@
     "@cliffy/ansi/colors": "jsr:@cliffy/ansi@^1.0.0/colors"
   },
   "lint": { "rules": { "tags": ["recommended"] } },
-  "fmt": { "useTabs": false, "lineWidth": 100 }
+  "fmt": { "useTabs": false, "lineWidth": 100 },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "*.ts",
+      "test/**/*.ts"
+    ],
+    "exclude": [
+      ".github/**",
+      ".git/**",
+      "docs/**",
+      "examples/**"
+    ]
+  }
 }
