@@ -2,7 +2,7 @@ name: release-jsr
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 permissions: read-all
 jobs:
   publish:
@@ -23,6 +23,3 @@ jobs:
         env:
           JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
         run: deno publish --allow-dirty
-
-
-

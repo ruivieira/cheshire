@@ -31,7 +31,11 @@ export abstract class Step {
 
   abstract getCommand(): string;
 
-  execute(): Promise<{ success: boolean; output?: string; error?: string }> | { success: boolean; output?: string; error?: string } {
+  execute(): Promise<{ success: boolean; output?: string; error?: string }> | {
+    success: boolean;
+    output?: string;
+    error?: string;
+  } {
     return { success: false };
   }
 
@@ -141,5 +145,3 @@ export abstract class Test {
     };
   }
 }
-
-

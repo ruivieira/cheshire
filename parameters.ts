@@ -25,13 +25,13 @@ export function substituteParameters(
 
   // Replace ${param} syntax first (more specific)
   for (const [key, value] of Object.entries(mergedParams)) {
-    const pattern = new RegExp(`\\$\\{${key}\\}`, 'g');
+    const pattern = new RegExp(`\\$\\{${key}\\}`, "g");
     result = result.replace(pattern, String(value));
   }
 
   // Replace $param syntax (less specific, but common)
   for (const [key, value] of Object.entries(mergedParams)) {
-    const pattern = new RegExp(`\\$${key}(?![a-zA-Z0-9_])`, 'g');
+    const pattern = new RegExp(`\\$${key}(?![a-zA-Z0-9_])`, "g");
     result = result.replace(pattern, String(value));
   }
 
@@ -82,6 +82,3 @@ function extractParameterNames(command: string): string[] {
 
   return Array.from(params);
 }
-
-
-

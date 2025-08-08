@@ -1,6 +1,7 @@
 # Cheshire
 
-A flexible pipeline execution system for Deno that supports both command-based and TypeScript-based steps.
+A flexible pipeline execution system for Deno that supports both command-based and TypeScript-based
+steps.
 
 ## Features
 
@@ -27,7 +28,7 @@ deno run --allow-run --allow-read --allow-write mod.ts
 ### Simple Pipeline
 
 ```typescript
-import { PipelineExecutor, SimpleStep, type Run } from "./mod.ts";
+import { PipelineExecutor, type Run, SimpleStep } from "./mod.ts";
 
 const pipeline: Run = {
   id: "example",
@@ -41,7 +42,7 @@ const pipeline: Run = {
 
 const executor = new PipelineExecutor();
 const result = await executor.executeRun(pipeline);
-console.log(`Pipeline ${result.success ? 'succeeded' : 'failed'}`);
+console.log(`Pipeline ${result.success ? "succeeded" : "failed"}`);
 ```
 
 ### Using Custom Executable Function
@@ -49,14 +50,14 @@ console.log(`Pipeline ${result.success ? 'succeeded' : 'failed'}`);
 You can inject your own command execution logic:
 
 ```typescript
-import { PipelineExecutor, SimpleStep, type Run, type ExecutableFunction } from "./mod.ts";
+import { type ExecutableFunction, PipelineExecutor, type Run, SimpleStep } from "./mod.ts";
 
 // Custom executable function that uses your own run implementation
 const customExecutable: ExecutableFunction = async (command: string, timeout?: number) => {
   // Use your own run function from @core.ts
   const { run } = await import("../ubik/src/libs/core.ts");
-  
-  const success = await run(command.split(' '));
+
+  const success = await run(command.split(" "));
   return {
     success,
     output: success ? "Command executed successfully" : "Command failed",
@@ -81,7 +82,7 @@ const result = await executor.executeRun(pipeline);
 ### Template Steps with Parameters
 
 ```typescript
-import { TemplateStep, type Run } from "./mod.ts";
+import { type Run, TemplateStep } from "./mod.ts";
 
 const pipeline: Run = {
   id: "template-example",
@@ -92,7 +93,7 @@ const pipeline: Run = {
       "greet",
       "Greet User",
       "echo 'Hello, ${name}! Welcome to ${project}.'",
-      { name: "Alice", project: "Cheshire" }
+      { name: "Alice", project: "Cheshire" },
     ),
   ],
 };
@@ -101,7 +102,7 @@ const pipeline: Run = {
 ### TypeScript Steps
 
 ```typescript
-import { Step, type Run } from "./mod.ts";
+import { type Run, Step } from "./mod.ts";
 
 class CustomTypeScriptStep extends Step {
   constructor() {

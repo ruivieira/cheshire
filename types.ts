@@ -118,6 +118,3 @@ export interface RunResult {
   endTime: Date;
   error?: string;
 }
-
-
-

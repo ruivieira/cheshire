@@ -79,5 +79,3 @@ export function runningText(text: string): string {
 export function waitingText(text: string): string {
   return `${emojis.waiting} ${dim(text)}`;
 }
-
-

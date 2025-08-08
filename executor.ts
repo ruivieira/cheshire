@@ -1,4 +1,6 @@
+// deno-lint-ignore-file no-explicit-any
 import {
+  type ExecutableFunction,
   type Platform,
   type PreCondition,
   type PreConditionLike,
@@ -11,7 +13,6 @@ import {
   type Test,
   type TestLike,
   type TestResult,
-  type ExecutableFunction,
 } from "./types.ts";
 import { isPlatformCompatible } from "./platform.ts";
 import { substituteParameters, validateParameters } from "./parameters.ts";
@@ -230,7 +231,9 @@ export class PipelineExecutor {
             ),
           );
         } else if (spinner) {
-          spinner.updateMessage(`Checking: ${(preCondition as any).name} (retry ${retryCount + 1})`);
+          spinner.updateMessage(
+            `Checking: ${(preCondition as any).name} (retry ${retryCount + 1})`,
+          );
         }
       }
 
@@ -242,7 +245,9 @@ export class PipelineExecutor {
       if (result.success) {
         const duration = Date.now() - startTime;
         if (this.verbose) {
-          console.log(successText(`Pre-condition passed: ${(preCondition as any).name} (${duration}ms)`));
+          console.log(
+            successText(`Pre-condition passed: ${(preCondition as any).name} (${duration}ms)`),
+          );
         } else if (spinner) {
           spinner.stop(true, false);
           Deno.stdout.writeSync(new TextEncoder().encode("\r"));
@@ -262,9 +267,13 @@ export class PipelineExecutor {
 
       if (retryCount <= maxRetries) {
         if (this.verbose) {
-          console.log(warningText(`Pre-condition failed, retrying in ${Math.pow(2, retryCount)}s...`));
+          console.log(
+            warningText(`Pre-condition failed, retrying in ${Math.pow(2, retryCount)}s...`),
+          );
         } else if (spinner) {
-          spinner.updateMessage(`Waiting: ${(preCondition as any).name} (retry in ${Math.pow(2, retryCount)}s)`);
+          spinner.updateMessage(
+            `Waiting: ${(preCondition as any).name} (retry in ${Math.pow(2, retryCount)}s)`,
+          );
         }
         await new Promise((resolve) => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
       }
@@ -272,7 +281,9 @@ export class PipelineExecutor {
 
     const duration = Date.now() - startTime;
     if (this.verbose) {
-      console.log(failureText(`Pre-condition failed: ${(preCondition as any).name} (${duration}ms)`));
+      console.log(
+        failureText(`Pre-condition failed: ${(preCondition as any).name} (${duration}ms)`),
+      );
       if (lastError) {
         console.log(failureText(`  Error: ${lastError}`));
       }
@@ -324,7 +335,10 @@ export class PipelineExecutor {
       if (isTypeScriptStep) {
         console.log(infoText("  TypeScript execution mode"));
       }
-      if ("parameters" in step && (step as any).parameters && Object.keys((step as any).parameters).length > 0) {
+      if (
+        "parameters" in step && (step as any).parameters &&
+        Object.keys((step as any).parameters).length > 0
+      ) {
         console.log(infoText(`  Parameters: ${JSON.stringify((step as any).parameters)}`));
       }
     } else {
@@ -335,7 +349,9 @@ export class PipelineExecutor {
     while (retryCount <= maxRetries) {
       if (retryCount > 0) {
         if (this.verbose) {
-          console.log(waitingText(`Retrying step (attempt ${retryCount + 1}/${maxRetries + 1})...`));
+          console.log(
+            waitingText(`Retrying step (attempt ${retryCount + 1}/${maxRetries + 1})...`),
+          );
         } else if (spinner) {
           spinner.updateMessage(`${(step as any).name} (retry ${retryCount + 1})`);
         }
@@ -386,7 +402,9 @@ export class PipelineExecutor {
         if (this.verbose) {
           console.log(warningText(`Step failed, retrying in ${Math.pow(2, retryCount)}s...`));
         } else if (spinner) {
-          spinner.updateMessage(`Waiting: ${(step as any).name} (retry in ${Math.pow(2, retryCount)}s)`);
+          spinner.updateMessage(
+            `Waiting: ${(step as any).name} (retry in ${Math.pow(2, retryCount)}s)`,
+          );
         }
         await new Promise((resolve) => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
       }
@@ -473,7 +491,10 @@ export class PipelineExecutor {
       if ((test as any).description) {
         console.log(infoText(`  ${(test as any).description}`));
       }
-      if ("parameters" in test && (test as any).parameters && Object.keys((test as any).parameters).length > 0) {
+      if (
+        "parameters" in test && (test as any).parameters &&
+        Object.keys((test as any).parameters).length > 0
+      ) {
         console.log(infoText(`  Parameters: ${JSON.stringify((test as any).parameters)}`));
       }
     } else {
@@ -484,7 +505,9 @@ export class PipelineExecutor {
     while (retryCount <= maxRetries) {
       if (retryCount > 0) {
         if (this.verbose) {
-          console.log(waitingText(`Retrying test (attempt ${retryCount + 1}/${maxRetries + 1})...`));
+          console.log(
+            waitingText(`Retrying test (attempt ${retryCount + 1}/${maxRetries + 1})...`),
+          );
         } else if (spinner) {
           spinner.updateMessage(`Testing: ${(test as any).name} (retry ${retryCount + 1})`);
         }
@@ -516,7 +539,9 @@ export class PipelineExecutor {
         if (this.verbose) {
           console.log(warningText(`Test failed, retrying in ${Math.pow(2, retryCount)}s...`));
         } else if (spinner) {
-          spinner.updateMessage(`Waiting: ${(test as any).name} (retry in ${Math.pow(2, retryCount)}s)`);
+          spinner.updateMessage(
+            `Waiting: ${(test as any).name} (retry in ${Math.pow(2, retryCount)}s)`,
+          );
         }
         await new Promise((resolve) => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
       }
@@ -550,8 +575,13 @@ export class PipelineExecutor {
     return steps.filter((step) => isPlatformCompatible(targetPlatform, (step as any).platform));
   }
 
-  private filterPreConditionsByPlatform(preConditions: PreConditionLike[], targetPlatform: Platform): PreConditionLike[] {
-    return preConditions.filter((preCondition) => isPlatformCompatible(targetPlatform, (preCondition as any).platform));
+  private filterPreConditionsByPlatform(
+    preConditions: PreConditionLike[],
+    targetPlatform: Platform,
+  ): PreConditionLike[] {
+    return preConditions.filter((preCondition) =>
+      isPlatformCompatible(targetPlatform, (preCondition as any).platform)
+    );
   }
 
   private filterTestsByPlatform(tests: TestLike[], targetPlatform: Platform): TestLike[] {
@@ -593,7 +623,9 @@ export class PipelineExecutor {
             preConditionResults.push(preConditionResult);
             if (!preConditionResult.success) {
               runSuccess = false;
-              runError = `Pre-condition '${(preCondition as any).name}' failed: ${preConditionResult.error}`;
+              runError = `Pre-condition '${
+                (preCondition as any).name
+              }' failed: ${preConditionResult.error}`;
               break;
             }
             if (this.verbose) {
@@ -680,5 +712,3 @@ export class PipelineExecutor {
     };
   }
 }
-
-

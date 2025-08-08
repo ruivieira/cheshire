@@ -1,5 +1,5 @@
-import { PipelineExecutor } from './executor.ts';
-import { type Run, type ExecutableFunction } from './types.ts';
+import { PipelineExecutor } from "./executor.ts";
+import { type ExecutableFunction, type Run } from "./types.ts";
 
 export async function runPipelineFromFile(
   filePath: string,
@@ -19,20 +19,18 @@ export async function runPipelineFromFile(
     const result = await executor.executeRun(pipeline);
 
     console.log(`\n📊 Pipeline Results for: ${pipeline.name}`);
-    console.log(`Overall Success: ${result.success ? '✅ Yes' : '❌ No'}`);
+    console.log(`Overall Success: ${result.success ? "✅ Yes" : "❌ No"}`);
     console.log(`Total Duration: ${result.totalDuration}ms`);
 
     if (!result.success && result.error) {
       console.log(`Error: ${result.error}`);
     }
 
-    console.log('\n📋 Step Results:');
+    console.log("\n📋 Step Results:");
     result.stepResults.forEach((stepResult, index) => {
       const step = pipeline.steps[index];
       console.log(
-        `${
-          stepResult.success ? '✅' : '❌'
-        } ${step.name}: ${stepResult.duration}ms`,
+        `${stepResult.success ? "✅" : "❌"} ${step.name}: ${stepResult.duration}ms`,
       );
       if (!stepResult.success && stepResult.error) {
         console.log(`  Error: ${stepResult.error}`);
@@ -40,13 +38,11 @@ export async function runPipelineFromFile(
     });
 
     if (result.testResults.length > 0) {
-      console.log('\n🧪 Test Results:');
+      console.log("\n🧪 Test Results:");
       result.testResults.forEach((testResult, index) => {
         const test = pipeline.tests![index];
         console.log(
-          `${
-            testResult.success ? '✅' : '❌'
-          } ${test.name}: ${testResult.duration}ms`,
+          `${testResult.success ? "✅" : "❌"} ${test.name}: ${testResult.duration}ms`,
         );
         if (!testResult.success && testResult.error) {
           console.log(`  Error: ${testResult.error}`);
@@ -56,7 +52,7 @@ export async function runPipelineFromFile(
 
     Deno.exit(result.success ? 0 : 1);
   } catch (error) {
-    console.error('❌ Failed to run pipeline:', error);
+    console.error("❌ Failed to run pipeline:", error);
     Deno.exit(1);
   }
 }
@@ -70,20 +66,18 @@ export async function runPipelineDirectly(
     const result = await executor.executeRun(pipeline);
 
     console.log(`\n📊 Pipeline Results for: ${pipeline.name}`);
-    console.log(`Overall Success: ${result.success ? '✅ Yes' : '❌ No'}`);
+    console.log(`Overall Success: ${result.success ? "✅ Yes" : "❌ No"}`);
     console.log(`Total Duration: ${result.totalDuration}ms`);
 
     if (!result.success && result.error) {
       console.log(`Error: ${result.error}`);
     }
 
-    console.log('\n📋 Step Results:');
+    console.log("\n📋 Step Results:");
     result.stepResults.forEach((stepResult, index) => {
       const step = pipeline.steps[index];
       console.log(
-        `${
-          stepResult.success ? '✅' : '❌'
-        } ${step.name}: ${stepResult.duration}ms`,
+        `${stepResult.success ? "✅" : "❌"} ${step.name}: ${stepResult.duration}ms`,
       );
       if (!stepResult.success && stepResult.error) {
         console.log(`  Error: ${stepResult.error}`);
@@ -91,13 +85,11 @@ export async function runPipelineDirectly(
     });
 
     if (result.testResults.length > 0) {
-      console.log('\n🧪 Test Results:');
+      console.log("\n🧪 Test Results:");
       result.testResults.forEach((testResult, index) => {
         const test = pipeline.tests![index];
         console.log(
-          `${
-            testResult.success ? '✅' : '❌'
-          } ${test.name}: ${testResult.duration}ms`,
+          `${testResult.success ? "✅" : "❌"} ${test.name}: ${testResult.duration}ms`,
         );
         if (!testResult.success && testResult.error) {
           console.log(`  Error: ${testResult.error}`);
@@ -107,7 +99,7 @@ export async function runPipelineDirectly(
 
     Deno.exit(result.success ? 0 : 1);
   } catch (error) {
-    console.error('❌ Failed to run pipeline:', error);
+    console.error("❌ Failed to run pipeline:", error);
     Deno.exit(1);
   }
 }

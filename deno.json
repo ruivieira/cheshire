@@ -23,5 +23,3 @@
   "lint": { "rules": { "tags": ["recommended"] } },
   "fmt": { "useTabs": false, "lineWidth": 100 }
 }
-
-

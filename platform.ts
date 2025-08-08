@@ -9,7 +9,7 @@ export function detectPlatform(): Platform {
       if (osRelease.includes("ID=ubuntu")) return "ubuntu";
       if (osRelease.includes("ID=debian")) return "debian";
       if (osRelease.includes("ID=centos")) return "centos";
-      if (osRelease.includes("ID=rhel") || osRelease.includes("ID=\"rhel\"")) return "rhel";
+      if (osRelease.includes("ID=rhel") || osRelease.includes('ID="rhel"')) return "rhel";
     } catch {
       // fall through
     }
@@ -72,6 +72,3 @@ export function getPlatformDisplayName(platform: Platform): string {
       return platform;
   }
 }
-
-
-

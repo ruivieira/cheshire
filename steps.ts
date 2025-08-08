@@ -223,7 +223,9 @@ export class ShellStep extends Step {
     if (Object.keys(this.environment).length === 0) {
       return this.command;
     }
-    const envVars = Object.entries(this.environment).map(([key, value]) => `${key}=${value}`).join(" ");
+    const envVars = Object.entries(this.environment).map(([key, value]) => `${key}=${value}`).join(
+      " ",
+    );
     return `${envVars} ${this.command}`;
   }
   validateParameters(): string[] {
@@ -320,6 +322,3 @@ export class TemplateTest extends Test {
     return Array.from(params);
   }
 }
-
-
-
