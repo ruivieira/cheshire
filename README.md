@@ -1,6 +1,8 @@
 # Cheshire
 
-[![tests](https://github.com/ruivieira/cheshire/actions/workflows/ci.yml/badge.svg)](https://github.com/ruivieira/cheshire/actions/workflows/ci.yml)
+[![Tests](https://github.com/ruivieira/cheshire/actions/workflows/ci.yml/badge.svg)](https://github.com/ruivieira/cheshire/actions/workflows/ci.yml)
+[![JSR](https://jsr.io/badges/@rui/cheshire)](https://jsr.io/@rui/cheshire)
+[![JSR Score](https://jsr.io/badges/@rui/cheshire/score)](https://jsr.io/@rui/cheshire)
 
 <div align="center">
   <img src="docs/cheshire.png" alt="Cheshire Cat from Alice in Wonderland" width="300">
