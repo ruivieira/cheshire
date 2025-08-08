@@ -25,4 +25,4 @@ jobs:
       - name: Run tests
         run: deno test -A
       - name: Publish to JSR
-        run: npx jsr publish
+        run: npx jsr publish --allow-dirty
