@@ -2,6 +2,10 @@
 
 [![tests](https://github.com/ruivieira/cheshire/actions/workflows/ci.yml/badge.svg)](https://github.com/ruivieira/cheshire/actions/workflows/ci.yml)
 
+<div align="center">
+  <img src="docs/cheshire.png" alt="Cheshire Cat from Alice in Wonderland" width="300">
+</div>
+
 A flexible pipeline execution system for Deno that supports both command-based and TypeScript-based
 steps.
 
