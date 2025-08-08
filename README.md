@@ -151,7 +151,7 @@ const pipeline: Run = {
 Execute multiple steps simultaneously to improve performance:
 
 ```typescript
-import { type Run, SimpleStep, ParallelStep } from "./mod.ts";
+import { ParallelStep, type Run, SimpleStep } from "./mod.ts";
 
 // Individual steps
 const step1 = new SimpleStep("step1", "Install Package A", "echo 'Installing A' && sleep 2");
@@ -159,8 +159,12 @@ const step2 = new SimpleStep("step2", "Install Package B", "echo 'Installing B' 
 const step3 = new SimpleStep("step3", "Install Package C", "echo 'Installing C' && sleep 1");
 
 // Parallel step that executes all three simultaneously
-const parallelStep = new ParallelStep("parallel-install", "Install packages in parallel", [step1, step2, step3], {
-  description: "Installs multiple packages simultaneously to save time"
+const parallelStep = new ParallelStep("parallel-install", "Install packages in parallel", [
+  step1,
+  step2,
+  step3,
+], {
+  description: "Installs multiple packages simultaneously to save time",
 });
 
 const pipeline: Run = {
@@ -174,7 +178,8 @@ const pipeline: Run = {
 };
 ```
 
-The parallel step will execute all contained steps simultaneously and only proceed to the next step when all parallel steps complete. If any step fails, the parallel step fails.
+The parallel step will execute all contained steps simultaneously and only proceed to the next step
+when all parallel steps complete. If any step fails, the parallel step fails.
 
 ### Parallel Execution Flow
 
@@ -199,6 +204,7 @@ graph TD
 ```
 
 **Key Benefits:**
+
 - **Performance**: Steps execute simultaneously, reducing total execution time
 - **Synchronisation**: Pipeline waits for all parallel steps to complete before continuing
 - **Error Handling**: Any failure in parallel steps causes the entire parallel step to fail

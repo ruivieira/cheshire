@@ -326,21 +326,21 @@ export class TemplateTest extends Test {
 
 /**
  * A container step that executes multiple steps in parallel.
- * 
+ *
  * The ParallelStep allows you to execute multiple independent steps simultaneously,
  * which can significantly improve pipeline performance. All contained steps start
  * execution at the same time, and the parallel step only completes when all
  * contained steps have finished.
- * 
+ *
  * If any contained step fails, the entire parallel step fails. This ensures
  * that all steps must succeed for the parallel execution to be considered successful.
- * 
+ *
  * @example
  * ```typescript
  * const step1 = new SimpleStep("step1", "Install A", "echo 'Installing A' && sleep 2");
  * const step2 = new SimpleStep("step2", "Install B", "echo 'Installing B' && sleep 3");
  * const step3 = new SimpleStep("step3", "Install C", "echo 'Installing C' && sleep 1");
- * 
+ *
  * const parallelStep = new ParallelStep("parallel", "Install packages", [step1, step2, step3]);
  * // All three steps execute simultaneously, completing in ~3 seconds instead of 6
  * ```
@@ -351,7 +351,7 @@ export class ParallelStep extends Step {
 
   /**
    * Creates a new parallel step.
-   * 
+   *
    * @param id - Unique identifier for the step
    * @param name - Human-readable name for the step
    * @param steps - Array of steps to execute in parallel
@@ -379,7 +379,7 @@ export class ParallelStep extends Step {
 
   /**
    * Validates parameters for all contained steps.
-   * 
+   *
    * @returns Array of validation error messages from all contained steps
    */
   override validateParameters(): string[] {
@@ -392,7 +392,7 @@ export class ParallelStep extends Step {
 
   /**
    * Gets the array of steps that will be executed in parallel.
-   * 
+   *
    * @returns Array of steps contained in this parallel step
    */
   getSteps(): Step[] {
@@ -401,7 +401,7 @@ export class ParallelStep extends Step {
 
   /**
    * Indicates that this is a TypeScript step that implements custom execution logic.
-   * 
+   *
    * @returns Always returns true for ParallelStep
    */
   override isTypeScriptStep(): boolean {
@@ -410,28 +410,28 @@ export class ParallelStep extends Step {
 
   /**
    * Executes all contained steps in parallel.
-   * 
+   *
    * This method creates a Promise for each contained step and executes them
    * simultaneously using Promise.all(). The parallel step succeeds only if
    * all contained steps succeed.
-   * 
+   *
    * @returns Promise that resolves to the execution result
    */
   override async execute(): Promise<{ success: boolean; output?: string; error?: string }> {
     try {
       const executor = new PipelineExecutor();
-      const stepPromises = this.steps.map(step => executor.executeStepWithRetries(step));
-      
+      const stepPromises = this.steps.map((step) => executor.executeStepWithRetries(step));
+
       const results = await Promise.all(stepPromises);
-      
-      const allSuccessful = results.every(result => result.success);
-      const outputs = results.map(result => result.output).filter(Boolean);
-      const errors = results.map(result => result.error).filter(Boolean);
-      
+
+      const allSuccessful = results.every((result) => result.success);
+      const outputs = results.map((result) => result.output).filter(Boolean);
+      const errors = results.map((result) => result.error).filter(Boolean);
+
       return {
         success: allSuccessful,
-        output: outputs.length > 0 ? outputs.join('\n') : undefined,
-        error: errors.length > 0 ? errors.join('\n') : undefined,
+        output: outputs.length > 0 ? outputs.join("\n") : undefined,
+        error: errors.length > 0 ? errors.join("\n") : undefined,
       };
     } catch (error) {
       return {

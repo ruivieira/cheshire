@@ -1,10 +1,10 @@
 import {
   type ExecutableFunction,
+  ParallelStep,
   PipelineExecutor,
   type Run,
   SimpleStep,
   TemplateStep,
-  ParallelStep,
 } from "./mod.ts";
 
 // Example of a custom executable function
@@ -100,20 +100,40 @@ async function example4() {
 // Example 5: Parallel step execution
 async function example5() {
   console.log("\n=== Example 5: Parallel Step Execution ===");
-  
+
   // Create individual steps with different execution times
-  const step1 = new SimpleStep("step1", "Install package A", "echo 'Installing package A' && sleep 2");
-  const step2 = new SimpleStep("step2", "Install package B", "echo 'Installing package B' && sleep 3");
-  const step3 = new SimpleStep("step3", "Install package C", "echo 'Installing package C' && sleep 1");
+  const step1 = new SimpleStep(
+    "step1",
+    "Install package A",
+    "echo 'Installing package A' && sleep 2",
+  );
+  const step2 = new SimpleStep(
+    "step2",
+    "Install package B",
+    "echo 'Installing package B' && sleep 3",
+  );
+  const step3 = new SimpleStep(
+    "step3",
+    "Install package C",
+    "echo 'Installing package C' && sleep 1",
+  );
 
   // Create a parallel step that executes all three steps simultaneously
   // This will complete in ~3 seconds (longest step) instead of 6 seconds (sequential)
-  const parallelStep = new ParallelStep("parallel-install", "Install packages in parallel", [step1, step2, step3], {
-    description: "Installs multiple packages simultaneously to save time"
+  const parallelStep = new ParallelStep("parallel-install", "Install packages in parallel", [
+    step1,
+    step2,
+    step3,
+  ], {
+    description: "Installs multiple packages simultaneously to save time",
   });
 
   // Create a step that runs after the parallel execution
-  const finalStep = new SimpleStep("final", "Final setup", "echo 'All packages installed, performing final setup'");
+  const finalStep = new SimpleStep(
+    "final",
+    "Final setup",
+    "echo 'All packages installed, performing final setup'",
+  );
 
   // Execute the parallel step with verbose output to see the execution flow
   const executor = new PipelineExecutor(true);
@@ -137,7 +157,7 @@ async function example5() {
 // Example 6: Pipeline with parallel steps
 async function example6() {
   console.log("\n=== Example 6: Pipeline with Parallel Steps ===");
-  
+
   const run: Run = {
     id: "example-6",
     name: "Parallel Pipeline Example",
@@ -152,9 +172,13 @@ async function example6() {
           new SimpleStep("task2", "Task 2", "echo 'Task 2 completed' && sleep 1"),
           new SimpleStep("task3", "Task 3", "echo 'Task 3 completed' && sleep 3"),
         ],
-        { description: "Executing multiple tasks simultaneously" }
+        { description: "Executing multiple tasks simultaneously" },
       ),
-      new SimpleStep("post", "Post-processing", "echo 'All tasks completed, performing post-processing'"),
+      new SimpleStep(
+        "post",
+        "Post-processing",
+        "echo 'All tasks completed, performing post-processing'",
+      ),
     ],
   };
 
