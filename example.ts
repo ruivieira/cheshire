@@ -4,6 +4,7 @@ import {
   type Run,
   SimpleStep,
   TemplateStep,
+  ParallelStep,
 } from "./mod.ts";
 
 // Example of a custom executable function
@@ -96,6 +97,72 @@ async function example4() {
   console.log(`Pipeline ${result.success ? "succeeded" : "failed"}`);
 }
 
+// Example 5: Parallel step execution
+async function example5() {
+  console.log("\n=== Example 5: Parallel Step Execution ===");
+  
+  // Create individual steps with different execution times
+  const step1 = new SimpleStep("step1", "Install package A", "echo 'Installing package A' && sleep 2");
+  const step2 = new SimpleStep("step2", "Install package B", "echo 'Installing package B' && sleep 3");
+  const step3 = new SimpleStep("step3", "Install package C", "echo 'Installing package C' && sleep 1");
+
+  // Create a parallel step that executes all three steps simultaneously
+  // This will complete in ~3 seconds (longest step) instead of 6 seconds (sequential)
+  const parallelStep = new ParallelStep("parallel-install", "Install packages in parallel", [step1, step2, step3], {
+    description: "Installs multiple packages simultaneously to save time"
+  });
+
+  // Create a step that runs after the parallel execution
+  const finalStep = new SimpleStep("final", "Final setup", "echo 'All packages installed, performing final setup'");
+
+  // Execute the parallel step with verbose output to see the execution flow
+  const executor = new PipelineExecutor(true);
+
+  console.log("Executing parallel step...");
+  const result = await executor.executeStepWithRetries(parallelStep);
+
+  console.log(`Parallel step result: ${result.success ? "SUCCESS" : "FAILED"}`);
+  if (result.output) {
+    console.log("Output:", result.output);
+  }
+  if (result.error) {
+    console.log("Error:", result.error);
+  }
+
+  console.log("\nExecuting final step...");
+  const finalResult = await executor.executeStepWithRetries(finalStep);
+  console.log(`Final step result: ${finalResult.success ? "SUCCESS" : "FAILED"}`);
+}
+
+// Example 6: Pipeline with parallel steps
+async function example6() {
+  console.log("\n=== Example 6: Pipeline with Parallel Steps ===");
+  
+  const run: Run = {
+    id: "example-6",
+    name: "Parallel Pipeline Example",
+    platform: "linux",
+    steps: [
+      new SimpleStep("prep", "Preparation", "echo 'Preparing environment...'"),
+      new ParallelStep(
+        "parallel-tasks",
+        "Execute tasks in parallel",
+        [
+          new SimpleStep("task1", "Task 1", "echo 'Task 1 completed' && sleep 2"),
+          new SimpleStep("task2", "Task 2", "echo 'Task 2 completed' && sleep 1"),
+          new SimpleStep("task3", "Task 3", "echo 'Task 3 completed' && sleep 3"),
+        ],
+        { description: "Executing multiple tasks simultaneously" }
+      ),
+      new SimpleStep("post", "Post-processing", "echo 'All tasks completed, performing post-processing'"),
+    ],
+  };
+
+  const executor = new PipelineExecutor(true);
+  const result = await executor.executeRun(run);
+  console.log(`Parallel Pipeline ${result.success ? "succeeded" : "failed"}`);
+}
+
 // Run all examples
 async function main() {
   console.log("=== Example 1: Simple Pipeline ===");
@@ -109,6 +176,12 @@ async function main() {
 
   console.log("\n=== Example 4: Custom Step ===");
   await example4();
+
+  console.log("\n=== Example 5: Parallel Step Execution ===");
+  await example5();
+
+  console.log("\n=== Example 6: Pipeline with Parallel Steps ===");
+  await example6();
 }
 
 if (import.meta.main) {
