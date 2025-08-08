@@ -1,6 +1,17 @@
 // Simple cross-platform test that works with Deno, Bun, and Node.js
 import { detectPlatform, type PlatformProvider, setPlatformProvider } from "../platform.ts";
 
+// Type declarations for cross-platform compatibility
+interface ProcessLike {
+  exit?: (code: number) => never;
+  argv?: string[];
+  env?: Record<string, string | undefined>;
+}
+
+interface GlobalThisWithProcess {
+  process?: ProcessLike;
+}
+
 // Test function that works across all platforms
 function runTests() {
   console.log("🧪 Running cross-platform tests...");
@@ -51,8 +62,9 @@ function runTests() {
     console.log("🎉 All tests passed!");
   } catch (error) {
     console.error("❌ Test failed:", error);
-    if (typeof (globalThis as any).process !== "undefined") {
-      (globalThis as any).process.exit(1);
+    const globalWithProcess = globalThis as GlobalThisWithProcess;
+    if (globalWithProcess.process?.exit) {
+      globalWithProcess.process.exit(1);
     } else {
       throw error;
     }
@@ -62,8 +74,7 @@ function runTests() {
 // Run tests if this file is executed directly
 if (
   import.meta.main ||
-  (typeof (globalThis as any).process !== "undefined" &&
-    (globalThis as any).process.argv[1] === new URL(import.meta.url).pathname)
+  ((globalThis as GlobalThisWithProcess).process?.argv?.[1] === new URL(import.meta.url).pathname)
 ) {
   runTests();
 }

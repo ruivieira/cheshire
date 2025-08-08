@@ -19,7 +19,8 @@
     "test": "deno test -A",
     "test:bun": "bun run test/simple-cross-platform.test.ts",
     "fmt": "deno fmt --check",
-    "lint": "deno lint"
+    "lint": "deno lint",
+    "type-check": "deno check **/*.ts"
   },
   "keywords": [
     "pipeline",

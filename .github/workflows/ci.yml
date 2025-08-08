@@ -34,5 +34,5 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-      - name: Run cross-platform tests
-        run: bun run test/simple-cross-platform.test.ts
+      - name: Run tests
+        run: bun test

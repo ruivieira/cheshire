@@ -5,14 +5,34 @@ const spinnerFrames = {
   waiting: ["⏳"],
 } as const;
 
+// Type declarations for cross-platform compatibility
+interface DenoLike {
+  stdout?: {
+    writeSync?: (data: Uint8Array) => void;
+  };
+}
+
+interface ProcessLike {
+  stdout?: {
+    write?: (data: string) => void;
+  };
+}
+
+interface GlobalThisWithRuntimes {
+  Deno?: DenoLike;
+  process?: ProcessLike;
+}
+
 // Cross-platform stdout write function
 function writeToStdout(data: string | Uint8Array): void {
-  if (typeof (globalThis as any).Deno !== "undefined") {
-    (globalThis as any).Deno.stdout.writeSync(
+  const globalWithRuntimes = globalThis as GlobalThisWithRuntimes;
+  
+  if (globalWithRuntimes.Deno?.stdout?.writeSync) {
+    globalWithRuntimes.Deno.stdout.writeSync(
       typeof data === "string" ? new TextEncoder().encode(data) : data,
     );
-  } else if (typeof (globalThis as any).process !== "undefined") {
-    (globalThis as any).process.stdout.write(
+  } else if (globalWithRuntimes.process?.stdout?.write) {
+    globalWithRuntimes.process.stdout.write(
       typeof data === "string" ? data : new TextDecoder().decode(data),
     );
   }

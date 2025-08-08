@@ -113,7 +113,7 @@ class DenoCommandExecutor implements CommandExecutor {
 
 // Node.js command executor
 class NodeCommandExecutor implements CommandExecutor {
-  async execute(
+  execute(
     command: string,
     args: string[] = [],
   ): Promise<{ success: boolean; stdout: string; stderr: string }> {
@@ -122,7 +122,6 @@ class NodeCommandExecutor implements CommandExecutor {
     }
 
     const { spawn } = (globalThis as any).require("node:child_process");
-    const { promisify } = (globalThis as any).require("node:util");
 
     return new Promise((resolve) => {
       const child = spawn(command, args, { shell: true });
@@ -147,7 +146,7 @@ class NodeCommandExecutor implements CommandExecutor {
     });
   }
 
-  async spawn(
+  spawn(
     command: string,
     args: string[] = [],
   ): Promise<{ success: boolean; stdout: string; stderr: string }> {
@@ -177,7 +176,7 @@ class BunCommandExecutor implements CommandExecutor {
     return { success, stdout, stderr };
   }
 
-  async spawn(
+  spawn(
     command: string,
     args: string[] = [],
   ): Promise<{ success: boolean; stdout: string; stderr: string }> {

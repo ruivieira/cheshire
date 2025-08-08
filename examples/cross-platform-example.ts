@@ -9,6 +9,15 @@ import {
   SimpleStep,
 } from "../mod.ts";
 
+// Type declarations for cross-platform compatibility
+interface ProcessLike {
+  env?: Record<string, string | undefined>;
+}
+
+interface GlobalThisWithProcess {
+  process?: ProcessLike;
+}
+
 // Example of custom platform provider for testing
 class TestPlatformProvider {
   getOS(): string {
@@ -23,10 +32,8 @@ class TestPlatformProvider {
   }
 
   env(key: string): string | undefined {
-    if (typeof (globalThis as any).process !== "undefined") {
-      return (globalThis as any).process.env[key];
-    }
-    return undefined;
+    const globalWithProcess = globalThis as GlobalThisWithProcess;
+    return globalWithProcess.process?.env?.[key];
   }
 }
 
