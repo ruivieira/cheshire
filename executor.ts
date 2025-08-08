@@ -154,36 +154,6 @@ class NodeCommandExecutor implements CommandExecutor {
   }
 }
 
-// Bun command executor
-class BunCommandExecutor implements CommandExecutor {
-  async execute(
-    command: string,
-    args: string[] = [],
-  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
-    if (typeof (globalThis as any).Bun === "undefined") {
-      throw new Error("Bun runtime not available");
-    }
-
-    const proc = (globalThis as any).Bun.spawn([command, ...args], {
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-
-    const stdout = await new Response(proc.stdout).text();
-    const stderr = await new Response(proc.stderr).text();
-    const success = await proc.exited === 0;
-
-    return { success, stdout, stderr };
-  }
-
-  spawn(
-    command: string,
-    args: string[] = [],
-  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
-    return this.execute(command, args);
-  }
-}
-
 // Helper function to concatenate Uint8Arrays
 function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {
   const totalLength = arrays.reduce((acc, arr) => acc + arr.length, 0);
@@ -202,8 +172,6 @@ function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {
 function getCommandExecutor(): CommandExecutor {
   if (typeof (globalThis as any).Deno !== "undefined") {
     return new DenoCommandExecutor();
-  } else if (typeof (globalThis as any).Bun !== "undefined") {
-    return new BunCommandExecutor();
   } else if (typeof (globalThis as any).process !== "undefined") {
     return new NodeCommandExecutor();
   } else {

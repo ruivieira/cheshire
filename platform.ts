@@ -16,11 +16,6 @@ class DefaultPlatformProvider implements PlatformProvider {
       return (globalThis as any).Deno.build.os;
     }
 
-    // Check for Bun
-    if (typeof (globalThis as any).Bun !== "undefined" && (globalThis as any).Bun.platform) {
-      return (globalThis as any).Bun.platform;
-    }
-
     // Check for Node.js
     if (
       typeof (globalThis as any).process !== "undefined" && (globalThis as any).process.platform
@@ -46,16 +41,6 @@ class DefaultPlatformProvider implements PlatformProvider {
       }
     }
 
-    // Check for Bun
-    if (typeof (globalThis as any).Bun !== "undefined" && (globalThis as any).Bun.file) {
-      try {
-        const file = (globalThis as any).Bun.file(path);
-        return file.textSync();
-      } catch {
-        return "";
-      }
-    }
-
     // Check for Node.js
     if (typeof (globalThis as any).require !== "undefined") {
       try {
@@ -73,11 +58,6 @@ class DefaultPlatformProvider implements PlatformProvider {
     // Check for Deno
     if (typeof (globalThis as any).Deno !== "undefined" && (globalThis as any).Deno.env) {
       return (globalThis as any).Deno.env.get(key);
-    }
-
-    // Check for Bun
-    if (typeof (globalThis as any).Bun !== "undefined" && (globalThis as any).Bun.env) {
-      return (globalThis as any).Bun.env[key];
     }
 
     // Check for Node.js

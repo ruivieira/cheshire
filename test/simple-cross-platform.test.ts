@@ -1,4 +1,4 @@
-// Simple cross-platform test that works with Deno, Bun, and Node.js
+// Simple cross-platform test that works with Deno and Node.js
 import { detectPlatform, type PlatformProvider, setPlatformProvider } from "../platform.ts";
 
 // Type declarations for cross-platform compatibility

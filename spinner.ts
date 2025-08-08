@@ -26,7 +26,7 @@ interface GlobalThisWithRuntimes {
 // Cross-platform stdout write function
 function writeToStdout(data: string | Uint8Array): void {
   const globalWithRuntimes = globalThis as GlobalThisWithRuntimes;
-  
+
   if (globalWithRuntimes.Deno?.stdout?.writeSync) {
     globalWithRuntimes.Deno.stdout.writeSync(
       typeof data === "string" ? new TextEncoder().encode(data) : data,
