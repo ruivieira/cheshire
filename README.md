@@ -146,6 +146,70 @@ const pipeline: Run = {
 };
 ```
 
+### Parallel Steps
+
+Execute multiple steps simultaneously to improve performance:
+
+```typescript
+import { ParallelStep, type Run, SimpleStep } from "./mod.ts";
+
+// Individual steps
+const step1 = new SimpleStep("step1", "Install Package A", "echo 'Installing A' && sleep 2");
+const step2 = new SimpleStep("step2", "Install Package B", "echo 'Installing B' && sleep 3");
+const step3 = new SimpleStep("step3", "Install Package C", "echo 'Installing C' && sleep 1");
+
+// Parallel step that executes all three simultaneously
+const parallelStep = new ParallelStep("parallel-install", "Install packages in parallel", [
+  step1,
+  step2,
+  step3,
+], {
+  description: "Installs multiple packages simultaneously to save time",
+});
+
+const pipeline: Run = {
+  id: "parallel-example",
+  name: "Parallel Pipeline",
+  platform: "linux",
+  steps: [
+    parallelStep,
+    new SimpleStep("final", "Final setup", "echo 'All packages installed'"),
+  ],
+};
+```
+
+The parallel step will execute all contained steps simultaneously and only proceed to the next step
+when all parallel steps complete. If any step fails, the parallel step fails.
+
+### Parallel Execution Flow
+
+```mermaid
+graph TD
+    A[Pipeline Start] --> B[Step 1: Sequential]
+    B --> C[Step 2: Parallel Step]
+    C --> D[Parallel Step A]
+    C --> E[Parallel Step B]
+    C --> F[Parallel Step C]
+    D --> G[Wait for All]
+    E --> G
+    F --> G
+    G --> H[Step 3: Sequential]
+    H --> I[Pipeline End]
+    
+    style C fill:#e1f5fe
+    style D fill:#f3e5f5
+    style E fill:#f3e5f5
+    style F fill:#f3e5f5
+    style G fill:#fff3e0
+```
+
+**Key Benefits:**
+
+- **Performance**: Steps execute simultaneously, reducing total execution time
+- **Synchronisation**: Pipeline waits for all parallel steps to complete before continuing
+- **Error Handling**: Any failure in parallel steps causes the entire parallel step to fail
+- **Flexibility**: Can contain any combination of step types (SimpleStep, TemplateStep, etc.)
+
 ## API Reference
 
 ### Core Types
@@ -169,6 +233,7 @@ const pipeline: Run = {
 - `PackageInstallStep`: Package installation step
 - `DockerStep`: Docker container step
 - `ShellStep`: Shell command step
+- `ParallelStep`: Container step that executes multiple steps in parallel
 
 ## Examples
 

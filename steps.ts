@@ -1,5 +1,6 @@
 import { Step, Test } from "./step.ts";
 import { type Platform } from "./types.ts";
+import { PipelineExecutor } from "./executor.ts";
 
 export class SimpleStep extends Step {
   private readonly command: string;
@@ -320,5 +321,123 @@ export class TemplateTest extends Test {
     }
 
     return Array.from(params);
+  }
+}
+
+/**
+ * A container step that executes multiple steps in parallel.
+ *
+ * The ParallelStep allows you to execute multiple independent steps simultaneously,
+ * which can significantly improve pipeline performance. All contained steps start
+ * execution at the same time, and the parallel step only completes when all
+ * contained steps have finished.
+ *
+ * If any contained step fails, the entire parallel step fails. This ensures
+ * that all steps must succeed for the parallel execution to be considered successful.
+ *
+ * @example
+ * ```typescript
+ * const step1 = new SimpleStep("step1", "Install A", "echo 'Installing A' && sleep 2");
+ * const step2 = new SimpleStep("step2", "Install B", "echo 'Installing B' && sleep 3");
+ * const step3 = new SimpleStep("step3", "Install C", "echo 'Installing C' && sleep 1");
+ *
+ * const parallelStep = new ParallelStep("parallel", "Install packages", [step1, step2, step3]);
+ * // All three steps execute simultaneously, completing in ~3 seconds instead of 6
+ * ```
+ */
+export class ParallelStep extends Step {
+  /** The steps to be executed in parallel */
+  private readonly steps: Step[];
+
+  /**
+   * Creates a new parallel step.
+   *
+   * @param id - Unique identifier for the step
+   * @param name - Human-readable name for the step
+   * @param steps - Array of steps to execute in parallel
+   * @param options - Optional configuration for the step
+   */
+  constructor(
+    id: string,
+    name: string,
+    steps: Step[],
+    options: {
+      description?: string;
+      platform?: Platform;
+      timeout?: number;
+      retries?: number;
+      continueOnFailure?: boolean;
+    } = {},
+  ) {
+    super(id, name, options);
+    this.steps = steps;
+  }
+
+  getCommand(): string {
+    return `parallel execution of ${this.steps.length} steps`;
+  }
+
+  /**
+   * Validates parameters for all contained steps.
+   *
+   * @returns Array of validation error messages from all contained steps
+   */
+  override validateParameters(): string[] {
+    const errors: string[] = [];
+    for (const step of this.steps) {
+      errors.push(...step.validateParameters());
+    }
+    return errors;
+  }
+
+  /**
+   * Gets the array of steps that will be executed in parallel.
+   *
+   * @returns Array of steps contained in this parallel step
+   */
+  getSteps(): Step[] {
+    return this.steps;
+  }
+
+  /**
+   * Indicates that this is a TypeScript step that implements custom execution logic.
+   *
+   * @returns Always returns true for ParallelStep
+   */
+  override isTypeScriptStep(): boolean {
+    return true;
+  }
+
+  /**
+   * Executes all contained steps in parallel.
+   *
+   * This method creates a Promise for each contained step and executes them
+   * simultaneously using Promise.all(). The parallel step succeeds only if
+   * all contained steps succeed.
+   *
+   * @returns Promise that resolves to the execution result
+   */
+  override async execute(): Promise<{ success: boolean; output?: string; error?: string }> {
+    try {
+      const executor = new PipelineExecutor();
+      const stepPromises = this.steps.map((step) => executor.executeStepWithRetries(step));
+
+      const results = await Promise.all(stepPromises);
+
+      const allSuccessful = results.every((result) => result.success);
+      const outputs = results.map((result) => result.output).filter(Boolean);
+      const errors = results.map((result) => result.error).filter(Boolean);
+
+      return {
+        success: allSuccessful,
+        output: outputs.length > 0 ? outputs.join("\n") : undefined,
+        error: errors.length > 0 ? errors.join("\n") : undefined,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+      };
+    }
   }
 }
