@@ -8,11 +8,13 @@
   <img src="docs/cheshire.png" alt="Cheshire Cat from Alice in Wonderland" width="300">
 </div>
 
-A flexible pipeline execution system for Deno that supports both command-based and TypeScript-based
-steps.
+A flexible, cross-platform pipeline execution system that supports Deno, Bun, and Node.js. Cheshire provides both command-based and TypeScript-based steps with automatic platform detection and filtering.
+
+**Note**: While Cheshire is designed to work with Deno, Bun, and Node.js, the main development and testing is done on Deno. The library has been tested on Bun and Node.js but Deno is the primary target runtime.
 
 ## Features
 
+- **Cross-Platform Support**: Works with Deno, Bun, and Node.js
 - **Flexible Execution**: Support for both command-based and TypeScript-based steps
 - **Platform Compatibility**: Automatic platform detection and filtering
 - **Parameter Substitution**: Dynamic parameter replacement in commands
@@ -22,14 +24,86 @@ steps.
 
 ## Installation
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd cheshire
+### Deno
 
-# Run with Deno
-deno run --allow-run --allow-read --allow-write mod.ts
+```bash
+# Using JSR
+deno add @rui/cheshire
+
+# Or import directly
+import { PipelineExecutor } from "jsr:@rui/cheshire@^0.2.0";
 ```
+
+### Bun
+
+```bash
+# Install via npm
+bun add @rui/cheshire
+
+# Or install from GitHub
+bun add rui/cheshire
+```
+
+### Node.js
+
+```bash
+# Install via npm
+npm install @rui/cheshire
+
+# Or install from GitHub
+npm install rui/cheshire
+```
+
+## Usage
+
+### Deno
+
+```typescript
+import { PipelineExecutor, type Run, SimpleStep } from "jsr:@rui/cheshire@^0.2.0";
+
+const pipeline: Run = {
+  id: "example",
+  name: "Example Pipeline",
+  platform: "linux",
+  steps: [
+    new SimpleStep("step1", "Echo Hello", "echo 'Hello, World!'"),
+    new SimpleStep("step2", "List Files", "ls -la"),
+  ],
+};
+
+const executor = new PipelineExecutor();
+const result = await executor.executeRun(pipeline);
+console.log(`Pipeline ${result.success ? "succeeded" : "failed"}`);
+```
+
+## Platform Detection
+
+Cheshire automatically detects the current platform and provides platform-specific functionality:
+
+```typescript
+import { detectPlatform, setPlatformProvider } from "@rui/cheshire";
+
+// Automatic platform detection
+const platform = detectPlatform();
+console.log(`Current platform: ${platform}`);
+
+// Custom platform provider (for testing or custom environments)
+setPlatformProvider({
+  getOS: () => "linux",
+  readTextFileSync: (path: string) => "ID=fedora",
+  env: (key: string) => process.env[key],
+});
+```
+
+## Cross-Platform Compatibility
+
+The library automatically adapts to the runtime environment:
+
+- **Deno**: Uses `Deno.Command` for process execution
+- **Bun**: Uses `Bun.spawn` for process execution  
+- **Node.js**: Uses `child_process.spawn` for process execution
+
+All platform-specific APIs are abstracted behind a common interface, ensuring consistent behaviour across runtimes.
 
 ## Basic Usage
 
@@ -246,6 +320,26 @@ See the `examples/` directory for more detailed examples.
 3. Make your changes
 4. Add tests
 5. Submit a pull request
+
+## Running CI Tests Locally
+
+You can run the CI tests locally using [act](https://github.com/nektos/act):
+
+```bash
+# Install act (if not already installed)
+# macOS: brew install act
+# Linux: curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
+# Run all CI jobs
+./scripts/run-ci-local.sh
+
+# Run specific jobs
+./scripts/run-ci-local.sh deno
+./scripts/run-ci-local.sh bun
+./scripts/run-ci-local.sh node
+```
+
+For more details, see [Running CI Tests Locally](docs/RUNNING_CI_LOCALLY.md).
 
 ## License
 

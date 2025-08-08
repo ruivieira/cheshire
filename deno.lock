@@ -37,6 +37,12 @@
   "workspace": {
     "dependencies": [
       "jsr:@cliffy/ansi@1"
-    ]
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@types/node@20",
+        "npm:typescript@5"
+      ]
+    }
   }
 }

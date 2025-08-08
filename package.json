@@ -1,0 +1,44 @@
+{
+  "name": "@rui/cheshire",
+  "version": "0.2.0",
+  "description": "A cross-platform pipeline execution framework",
+  "main": "mod.ts",
+  "type": "module",
+  "exports": {
+    ".": "./mod.ts",
+    "./executor": "./executor.ts",
+    "./step": "./step.ts",
+    "./steps": "./steps.ts",
+    "./types": "./types.ts",
+    "./platform": "./platform.ts",
+    "./parameters": "./parameters.ts",
+    "./colours": "./colours.ts",
+    "./spinner": "./spinner.ts"
+  },
+  "scripts": {
+    "test": "deno test -A",
+    "test:bun": "bun run test/simple-cross-platform.test.ts",
+    "test:node": "node test/simple-cross-platform.test.ts",
+    "fmt": "deno fmt --check",
+    "lint": "deno lint",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "pipeline",
+    "execution",
+    "cross-platform",
+    "typescript",
+    "deno",
+    "bun",
+    "node"
+  ],
+  "author": "Rui",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
