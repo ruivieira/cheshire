@@ -168,11 +168,6 @@ const pipeline: Run = {
 - `DockerStep`: Docker container step
 - `ShellStep`: Shell command step
 
-### CLI Functions
-
-- `runPipelineFromFile(filePath: string, executableFunction?: ExecutableFunction)`
-- `runPipelineDirectly(pipeline: Run, executableFunction?: ExecutableFunction)`
-
 ## Examples
 
 See the `examples/` directory for more detailed examples.

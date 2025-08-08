@@ -10,8 +10,7 @@
     "./platform": "./platform.ts",
     "./parameters": "./parameters.ts",
     "./colours": "./colours.ts",
-    "./spinner": "./spinner.ts",
-    "./cli": "./cli.ts"
+    "./spinner": "./spinner.ts"
   },
   "tasks": {
     "fmt": "deno fmt --check",
