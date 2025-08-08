@@ -18,10 +18,8 @@
   "scripts": {
     "test": "deno test -A",
     "test:bun": "bun run test/simple-cross-platform.test.ts",
-    "test:node": "node test/simple-cross-platform.test.ts",
     "fmt": "deno fmt --check",
-    "lint": "deno lint",
-    "type-check": "tsc --noEmit"
+    "lint": "deno lint"
   },
   "keywords": [
     "pipeline",
@@ -29,16 +27,11 @@
     "cross-platform",
     "typescript",
     "deno",
-    "bun",
-    "node"
+    "bun"
   ],
   "author": "Rui",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
   }
 }

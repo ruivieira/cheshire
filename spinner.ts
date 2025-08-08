@@ -8,9 +8,13 @@ const spinnerFrames = {
 // Cross-platform stdout write function
 function writeToStdout(data: string | Uint8Array): void {
   if (typeof (globalThis as any).Deno !== "undefined") {
-    (globalThis as any).Deno.stdout.writeSync(typeof data === "string" ? new TextEncoder().encode(data) : data);
+    (globalThis as any).Deno.stdout.writeSync(
+      typeof data === "string" ? new TextEncoder().encode(data) : data,
+    );
   } else if (typeof (globalThis as any).process !== "undefined") {
-    (globalThis as any).process.stdout.write(typeof data === "string" ? data : new TextDecoder().decode(data));
+    (globalThis as any).process.stdout.write(
+      typeof data === "string" ? data : new TextDecoder().decode(data),
+    );
   }
 }
 

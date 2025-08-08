@@ -15,33 +15,37 @@ class DefaultPlatformProvider implements PlatformProvider {
     if (typeof (globalThis as any).Deno !== "undefined" && (globalThis as any).Deno.build) {
       return (globalThis as any).Deno.build.os;
     }
-    
+
     // Check for Bun
     if (typeof (globalThis as any).Bun !== "undefined" && (globalThis as any).Bun.platform) {
       return (globalThis as any).Bun.platform;
     }
-    
+
     // Check for Node.js
-    if (typeof (globalThis as any).process !== "undefined" && (globalThis as any).process.platform) {
+    if (
+      typeof (globalThis as any).process !== "undefined" && (globalThis as any).process.platform
+    ) {
       const platform = (globalThis as any).process.platform;
       if (platform === "win32") return "windows";
       if (platform === "darwin") return "darwin";
       return "linux";
     }
-    
+
     return "unix";
   }
 
   readTextFileSync(path: string): string {
     // Check for Deno
-    if (typeof (globalThis as any).Deno !== "undefined" && (globalThis as any).Deno.readTextFileSync) {
+    if (
+      typeof (globalThis as any).Deno !== "undefined" && (globalThis as any).Deno.readTextFileSync
+    ) {
       try {
         return (globalThis as any).Deno.readTextFileSync(path);
       } catch {
         return "";
       }
     }
-    
+
     // Check for Bun
     if (typeof (globalThis as any).Bun !== "undefined" && (globalThis as any).Bun.file) {
       try {
@@ -51,7 +55,7 @@ class DefaultPlatformProvider implements PlatformProvider {
         return "";
       }
     }
-    
+
     // Check for Node.js
     if (typeof (globalThis as any).require !== "undefined") {
       try {
@@ -61,7 +65,7 @@ class DefaultPlatformProvider implements PlatformProvider {
         return "";
       }
     }
-    
+
     return "";
   }
 
@@ -70,17 +74,17 @@ class DefaultPlatformProvider implements PlatformProvider {
     if (typeof (globalThis as any).Deno !== "undefined" && (globalThis as any).Deno.env) {
       return (globalThis as any).Deno.env.get(key);
     }
-    
+
     // Check for Bun
     if (typeof (globalThis as any).Bun !== "undefined" && (globalThis as any).Bun.env) {
       return (globalThis as any).Bun.env[key];
     }
-    
+
     // Check for Node.js
     if (typeof (globalThis as any).process !== "undefined" && (globalThis as any).process.env) {
       return (globalThis as any).process.env[key];
     }
-    
+
     return undefined;
   }
 }

@@ -32,23 +32,32 @@ import { Spinner } from "./spinner.ts";
 
 // Cross-platform command execution interface
 interface CommandExecutor {
-  execute(command: string, args?: string[]): Promise<{ success: boolean; stdout: string; stderr: string }>;
-  spawn(command: string, args?: string[]): Promise<{ success: boolean; stdout: string; stderr: string }>;
+  execute(
+    command: string,
+    args?: string[],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }>;
+  spawn(
+    command: string,
+    args?: string[],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }>;
 }
 
 // Deno command executor
 class DenoCommandExecutor implements CommandExecutor {
-  async execute(command: string, args: string[] = []): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  async execute(
+    command: string,
+    args: string[] = [],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
     if (typeof (globalThis as any).Deno === "undefined") {
       throw new Error("Deno runtime not available");
     }
-    
+
     const { success, stdout, stderr } = await new (globalThis as any).Deno.Command(command, {
       args,
       stdout: "piped",
       stderr: "piped",
     }).output();
-    
+
     return {
       success,
       stdout: new TextDecoder().decode(stdout),
@@ -56,11 +65,14 @@ class DenoCommandExecutor implements CommandExecutor {
     };
   }
 
-  async spawn(command: string, args: string[] = []): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  async spawn(
+    command: string,
+    args: string[] = [],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
     if (typeof (globalThis as any).Deno === "undefined") {
       throw new Error("Deno runtime not available");
     }
-    
+
     const process = new (globalThis as any).Deno.Command(command, {
       args,
       stdout: "piped",
@@ -78,7 +90,7 @@ class DenoCommandExecutor implements CommandExecutor {
         },
       }),
     );
-    
+
     const stderrPump = process.stderr.pipeTo(
       new WritableStream<Uint8Array>({
         write: (chunk) => {
@@ -90,7 +102,7 @@ class DenoCommandExecutor implements CommandExecutor {
 
     await Promise.all([stdoutPump, stderrPump]);
     const status = await process.status;
-    
+
     return {
       success: status.success,
       stdout: new TextDecoder().decode(concatUint8Arrays(stdoutChunks)),
@@ -101,27 +113,30 @@ class DenoCommandExecutor implements CommandExecutor {
 
 // Node.js command executor
 class NodeCommandExecutor implements CommandExecutor {
-  async execute(command: string, args: string[] = []): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  async execute(
+    command: string,
+    args: string[] = [],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
     if (typeof (globalThis as any).require === "undefined") {
       throw new Error("Node.js runtime not available");
     }
-    
+
     const { spawn } = (globalThis as any).require("node:child_process");
     const { promisify } = (globalThis as any).require("node:util");
-    
+
     return new Promise((resolve) => {
       const child = spawn(command, args, { shell: true });
       let stdout = "";
       let stderr = "";
-      
+
       child.stdout.on("data", (data: any) => {
         stdout += data.toString();
       });
-      
+
       child.stderr.on("data", (data: any) => {
         stderr += data.toString();
       });
-      
+
       child.on("close", (code: number) => {
         resolve({
           success: code === 0,
@@ -132,31 +147,40 @@ class NodeCommandExecutor implements CommandExecutor {
     });
   }
 
-  async spawn(command: string, args: string[] = []): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  async spawn(
+    command: string,
+    args: string[] = [],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
     return this.execute(command, args);
   }
 }
 
 // Bun command executor
 class BunCommandExecutor implements CommandExecutor {
-  async execute(command: string, args: string[] = []): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  async execute(
+    command: string,
+    args: string[] = [],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
     if (typeof (globalThis as any).Bun === "undefined") {
       throw new Error("Bun runtime not available");
     }
-    
+
     const proc = (globalThis as any).Bun.spawn([command, ...args], {
       stdout: "pipe",
       stderr: "pipe",
     });
-    
+
     const stdout = await new Response(proc.stdout).text();
     const stderr = await new Response(proc.stderr).text();
     const success = await proc.exited === 0;
-    
+
     return { success, stdout, stderr };
   }
 
-  async spawn(command: string, args: string[] = []): Promise<{ success: boolean; stdout: string; stderr: string }> {
+  async spawn(
+    command: string,
+    args: string[] = [],
+  ): Promise<{ success: boolean; stdout: string; stderr: string }> {
     return this.execute(command, args);
   }
 }
@@ -166,12 +190,12 @@ function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {
   const totalLength = arrays.reduce((acc, arr) => acc + arr.length, 0);
   const result = new Uint8Array(totalLength);
   let offset = 0;
-  
+
   for (const arr of arrays) {
     result.set(arr, offset);
     offset += arr.length;
   }
-  
+
   return result;
 }
 
@@ -231,7 +255,7 @@ export class PipelineExecutor {
 
         const output = stdout;
         const error = stderr;
-        
+
         return {
           success,
           output,

@@ -8,13 +8,15 @@
   <img src="docs/cheshire.png" alt="Cheshire Cat from Alice in Wonderland" width="300">
 </div>
 
-A flexible, cross-platform pipeline execution system that supports Deno, Bun, and Node.js. Cheshire provides both command-based and TypeScript-based steps with automatic platform detection and filtering.
+A flexible, cross-platform pipeline execution system that supports Deno and Bun. Cheshire provides
+both command-based and TypeScript-based steps with automatic platform detection and filtering.
 
-**Note**: While Cheshire is designed to work with Deno, Bun, and Node.js, the main development and testing is done on Deno. The library has been tested on Bun and Node.js but Deno is the primary target runtime.
+**Note**: While Cheshire is designed to work with Deno and Bun, the main development and testing is
+done on Deno. The library has been tested on Bun but Deno is the primary target runtime.
 
 ## Features
 
-- **Cross-Platform Support**: Works with Deno, Bun, and Node.js
+- **Cross-Platform Support**: Works with Deno and Bun
 - **Flexible Execution**: Support for both command-based and TypeScript-based steps
 - **Platform Compatibility**: Automatic platform detection and filtering
 - **Parameter Substitution**: Dynamic parameter replacement in commands
@@ -42,16 +44,6 @@ bun add @rui/cheshire
 
 # Or install from GitHub
 bun add rui/cheshire
-```
-
-### Node.js
-
-```bash
-# Install via npm
-npm install @rui/cheshire
-
-# Or install from GitHub
-npm install rui/cheshire
 ```
 
 ## Usage
@@ -100,10 +92,10 @@ setPlatformProvider({
 The library automatically adapts to the runtime environment:
 
 - **Deno**: Uses `Deno.Command` for process execution
-- **Bun**: Uses `Bun.spawn` for process execution  
-- **Node.js**: Uses `child_process.spawn` for process execution
+- **Bun**: Uses `Bun.spawn` for process execution
 
-All platform-specific APIs are abstracted behind a common interface, ensuring consistent behaviour across runtimes.
+All platform-specific APIs are abstracted behind a common interface, ensuring consistent behaviour
+across runtimes.
 
 ## Basic Usage
 
@@ -336,7 +328,6 @@ You can run the CI tests locally using [act](https://github.com/nektos/act):
 # Run specific jobs
 ./scripts/run-ci-local.sh deno
 ./scripts/run-ci-local.sh bun
-./scripts/run-ci-local.sh node
 ```
 
 For more details, see [Running CI Tests Locally](docs/RUNNING_CI_LOCALLY.md).

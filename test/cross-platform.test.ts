@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
-import { detectPlatform, setPlatformProvider, type PlatformProvider } from "../platform.ts";
+import { detectPlatform, type PlatformProvider, setPlatformProvider } from "../platform.ts";
 
 Deno.test("Platform detection - Deno runtime", () => {
   const platform = detectPlatform();
@@ -14,7 +14,7 @@ Deno.test("Platform detection - custom provider", () => {
     readTextFileSync: () => "",
     env: () => undefined,
   };
-  
+
   setPlatformProvider(customProvider);
   const platform = detectPlatform();
   assertEquals(platform, "mac");
@@ -31,7 +31,7 @@ Deno.test("Platform detection - Linux Fedora", () => {
     },
     env: () => undefined,
   };
-  
+
   setPlatformProvider(fedoraProvider);
   const platform = detectPlatform();
   assertEquals(platform, "fedora");
@@ -43,7 +43,7 @@ Deno.test("Platform detection - Windows", () => {
     readTextFileSync: () => "",
     env: () => undefined,
   };
-  
+
   setPlatformProvider(windowsProvider);
   const platform = detectPlatform();
   assertEquals(platform, "windows");
